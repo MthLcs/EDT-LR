@@ -14,18 +14,7 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   String _username, _password;
-  bool _isVisible = true;
 
-  @override
-  void initState() {
-    autoLogIn();
-    super.initState();
-    Api.isLoggedIn().then((value) {
-      if (value) {
-        Navigator.pushReplacementNamed(context, Routes.timetable);
-      }
-    });
-  }
 
   void autoLogIn() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -33,19 +22,28 @@ class _LoginPageState extends State<LoginPage> {
     if (userId != null) {
       setState(() {
         _username=userId;
-        _isVisible=false;
       });
       return;
     }
   }
+  @override
+  void initState() {
+    super.initState();
+    Api.isLoggedIn().then((value) {
+      if (value) {
+        Navigator.pushReplacementNamed(context, Routes.timetable);
+      }
+    });
+    //autoLogIn();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       body: Container(
-        child: Visibility(
-          visible: _isVisible,
         child: Center(
           child: Form(
             key: _formKey,
@@ -80,8 +78,7 @@ class _LoginPageState extends State<LoginPage> {
               ],
             ),
           ),
-        ),
-        ),
+        )
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
